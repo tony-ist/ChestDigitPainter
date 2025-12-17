@@ -83,6 +83,8 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    // Revoke the blob URL to free up memory
+    URL.revokeObjectURL(url);
   };
 
   return (
