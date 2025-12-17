@@ -1,0 +1,61 @@
+.pixel-grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.pixel-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: #333;
+  padding: 2px;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.pixel-row {
+  display: flex;
+  gap: 2px;
+}
+
+.pixel {
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+  cursor: crosshair;
+  transition: background-color 0.1s;
+}
+
+.pixel.white {
+  background-color: #ffffff;
+}
+
+.pixel.black {
+  background-color: #000000;
+}
+
+.pixel:hover {
+  opacity: 0.8;
+}
+
+.clear-button {
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button:hover {
+  background-color: #535bf2;
+}
+
+.clear-button:active {
+  background-color: #4348c2;
+}
