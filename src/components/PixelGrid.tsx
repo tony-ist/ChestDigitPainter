@@ -15,6 +15,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
   const [isErasing, setIsErasing] = useState(false);
   const [savedData, setSavedData] = useState<number[][]>([]);
   const [showToast, setShowToast] = useState(false);
+  const [label, setLabel] = useState<string>('');
 
   useEffect(() => {
     console.log(savedData);
@@ -75,10 +76,23 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     setGrid(Array(rows).fill(null).map(() => Array(cols).fill(false)));
   };
 
+  const isValidLabel = (value: string): boolean => {
+    // Check if the string is exactly one digit (0-9), disallowing negative numbers
+    return /^[0-9]$/.test(value);
+  };
+
   const saveGrid = () => {
+    // Extract the digit from label
+    const digits = label.match(/\d/g);
+    const labelDigit = digits ? parseInt(digits[0], 10) : 0;
+    
     // Flatten the grid row by row into a single array of 54 elements
     const flattened: number[] = grid.flat().map(pixel => pixel ? 1 : 0);
-    setSavedData(prev => [...prev, flattened]);
+    
+    // Prepend label as the first value in the array
+    const dataWithLabel: number[] = [labelDigit, ...flattened];
+    
+    setSavedData(prev => [...prev, dataWithLabel]);
     setShowToast(true);
     clearGrid();
   };
@@ -131,11 +145,26 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
       <div className="saved-data-counter">
         Saved: {savedData.length}
       </div>
+      <div className="label-input-container">
+        <label htmlFor="label-input">Label:</label>
+        <input
+          id="label-input"
+          type="text"
+          className="label-input"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          placeholder="Enter digit (0-9)"
+        />
+      </div>
       <div className="button-group">
         <button className="clear-button" onClick={clearGrid}>
           Clear
         </button>
-        <button className="save-button" onClick={saveGrid}>
+        <button 
+          className="save-button" 
+          onClick={saveGrid}
+          disabled={!isValidLabel(label)}
+        >
           Save
         </button>
         <button className="download-button" onClick={downloadCSV} disabled={savedData.length === 0}>
