@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import './PixelGrid.css';
+import Toast from './Toast';
 
 interface PixelGridProps {
   rows?: number;
@@ -12,6 +13,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
   );
   const [isDrawing, setIsDrawing] = useState(false);
   const [savedData, setSavedData] = useState<number[][]>([]);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     console.log(savedData);
@@ -58,6 +60,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     // Flatten the grid row by row into a single array of 54 elements
     const flattened: number[] = grid.flat().map(pixel => pixel ? 1 : 0);
     setSavedData(prev => [...prev, flattened]);
+    setShowToast(true);
   };
 
   return (
@@ -88,6 +91,11 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
           Save
         </button>
       </div>
+      <Toast
+        message="Grid saved successfully!"
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   );
 };
