@@ -9,24 +9,31 @@
 .pixel-grid {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   background-color: #333;
-  padding: 2px;
-  border-radius: 4px;
+  border: 1px solid #333;
   user-select: none;
 }
 
 .pixel-row {
   display: flex;
-  gap: 2px;
 }
 
 .pixel {
   width: 40px;
   height: 40px;
-  border-radius: 2px;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
   cursor: crosshair;
   transition: background-color 0.1s;
+  box-sizing: border-box;
+}
+
+.pixel-row:last-child .pixel {
+  border-bottom: none;
+}
+
+.pixel-row .pixel:last-child {
+  border-right: none;
 }
 
 .pixel.white {
