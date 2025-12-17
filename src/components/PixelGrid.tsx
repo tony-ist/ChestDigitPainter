@@ -12,6 +12,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     Array(rows).fill(null).map(() => Array(cols).fill(false))
   );
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
   const [savedData, setSavedData] = useState<number[][]>([]);
   const [showToast, setShowToast] = useState(false);
 
@@ -19,12 +20,12 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     console.log(savedData);
   }, [savedData]);
 
-  const togglePixel = useCallback((row: number, col: number) => {
+  const setPixel = useCallback((row: number, col: number, isBlack: boolean) => {
     setGrid((prevGrid) => {
       const newGrid = prevGrid.map((r, rIdx) =>
         r.map((cell, cIdx) => {
           if (rIdx === row && cIdx === col) {
-            return true; // Set to black
+            return isBlack; // Set to black or white
           }
           return cell;
         })
@@ -33,23 +34,41 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     });
   }, []);
 
-  const handleMouseDown = (row: number, col: number) => {
-    setIsDrawing(true);
-    togglePixel(row, col);
+  const handleMouseDown = (e: React.MouseEvent, row: number, col: number) => {
+    e.preventDefault();
+    if (e.button === 0) {
+      // Left mouse button - draw black
+      setIsDrawing(true);
+      setIsErasing(false);
+      setPixel(row, col, true);
+    } else if (e.button === 2) {
+      // Right mouse button - draw white (erase)
+      setIsErasing(true);
+      setIsDrawing(false);
+      setPixel(row, col, false);
+    }
   };
 
-  const handleMouseMove = (row: number, col: number) => {
+  const handleMouseMove = (_e: React.MouseEvent, row: number, col: number) => {
     if (isDrawing) {
-      togglePixel(row, col);
+      setPixel(row, col, true);
+    } else if (isErasing) {
+      setPixel(row, col, false);
     }
   };
 
   const handleMouseUp = () => {
     setIsDrawing(false);
+    setIsErasing(false);
   };
 
   const handleMouseLeave = () => {
     setIsDrawing(false);
+    setIsErasing(false);
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent context menu on right click
   };
 
   const clearGrid = () => {
@@ -94,6 +113,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
         className="pixel-grid"
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onContextMenu={handleContextMenu}
       >
         {grid.map((row, rowIndex) => (
           <div key={rowIndex} className="pixel-row">
@@ -101,8 +121,8 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
               <div
                 key={`${rowIndex}-${colIndex}`}
                 className={`pixel ${isBlack ? 'black' : 'white'}`}
-                onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                onMouseMove={() => handleMouseMove(rowIndex, colIndex)}
+                onMouseDown={(e) => handleMouseDown(e, rowIndex, colIndex)}
+                onMouseMove={(e) => handleMouseMove(e, rowIndex, colIndex)}
               />
             ))}
           </div>
@@ -123,7 +143,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
         </button>
       </div>
       <Toast
-        message="Grid saved successfully!"
+        message="Digit saved successfully!"
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />
