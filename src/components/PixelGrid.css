@@ -54,7 +54,8 @@
 }
 
 .clear-button,
-.save-button {
+.save-button,
+.download-button {
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
   background-color: #646cff;
@@ -66,11 +67,19 @@
 }
 
 .clear-button:hover,
-.save-button:hover {
+.save-button:hover,
+.download-button:hover:not(:disabled) {
   background-color: #535bf2;
 }
 
 .clear-button:active,
-.save-button:active {
+.save-button:active,
+.download-button:active:not(:disabled) {
   background-color: #4348c2;
+}
+
+.download-button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }

@@ -63,6 +63,28 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     setShowToast(true);
   };
 
+  const downloadCSV = () => {
+    if (savedData.length === 0) {
+      return; // No data to download
+    }
+
+    // Convert savedData to CSV format (no header row, each row has 54 values)
+    const csvContent = savedData
+      .map(row => row.join(','))
+      .join('\n');
+
+    // Create a blob and download it
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'saved_data.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="pixel-grid-container">
       <div
@@ -89,6 +111,9 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
         </button>
         <button className="save-button" onClick={saveGrid}>
           Save
+        </button>
+        <button className="download-button" onClick={downloadCSV} disabled={savedData.length === 0}>
+          Download CSV
         </button>
       </div>
       <Toast
