@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import './PixelGrid.css';
 
 interface PixelGridProps {
@@ -11,6 +11,11 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     Array(rows).fill(null).map(() => Array(cols).fill(false))
   );
   const [isDrawing, setIsDrawing] = useState(false);
+  const [savedData, setSavedData] = useState<number[][]>([]);
+
+  useEffect(() => {
+    console.log(savedData);
+  }, [savedData]);
 
   const togglePixel = useCallback((row: number, col: number) => {
     setGrid((prevGrid) => {
@@ -49,6 +54,12 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     setGrid(Array(rows).fill(null).map(() => Array(cols).fill(false)));
   };
 
+  const saveGrid = () => {
+    // Flatten the grid row by row into a single array of 54 elements
+    const flattened: number[] = grid.flat().map(pixel => pixel ? 1 : 0);
+    setSavedData(prev => [...prev, flattened]);
+  };
+
   return (
     <div className="pixel-grid-container">
       <div
@@ -69,9 +80,14 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
           </div>
         ))}
       </div>
-      <button className="clear-button" onClick={clearGrid}>
-        Clear
-      </button>
+      <div className="button-group">
+        <button className="clear-button" onClick={clearGrid}>
+          Clear
+        </button>
+        <button className="save-button" onClick={saveGrid}>
+          Save
+        </button>
+      </div>
     </div>
   );
 };
