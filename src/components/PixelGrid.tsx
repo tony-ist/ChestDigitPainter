@@ -61,6 +61,7 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
     const flattened: number[] = grid.flat().map(pixel => pixel ? 1 : 0);
     setSavedData(prev => [...prev, flattened]);
     setShowToast(true);
+    clearGrid();
   };
 
   const downloadCSV = () => {
@@ -106,6 +107,9 @@ const PixelGrid = ({ rows = 6, cols = 9 }: PixelGridProps) => {
             ))}
           </div>
         ))}
+      </div>
+      <div className="saved-data-counter">
+        Saved: {savedData.length}
       </div>
       <div className="button-group">
         <button className="clear-button" onClick={clearGrid}>
